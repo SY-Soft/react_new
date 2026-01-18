@@ -1,48 +1,42 @@
-// src/pages/Home.jsx
+import {useState} from "react";
+
 export default function Home() {
+
     return (
-        <div className="home-page" style={{border:"red 1px dotted"}}>
-            <section className="mb-5">
-                <h1 className="mb-3">Dashboard</h1>
-                <p className="text-muted">
-                    Добро пожаловать. Это стартовая страница приложения.
-                </p>
-            </section>
+        <>
+            <h1>Главная</h1>
 
-            <section className="row g-4">
-                <div className="col-md-4">
-                    <div className="card shadow-sm">
-                        <div className="card-body">
-                            <h5 className="card-title">Users</h5>
-                            <p className="card-text">
-                                Управление пользователями системы.
-                            </p>
-                        </div>
-                    </div>
-                </div>
+            <p>
+                Меня зовут Юрий.
+                Я осознанно откликаюсь на вакансию React-разработчика и показываю практический результат <strong>до</strong> этапа собеседований.
+            </p>
 
-                <div className="col-md-4">
-                    <div className="card shadow-sm">
-                        <div className="card-body">
-                            <h5 className="card-title">API</h5>
-                            <p className="card-text">
-                                Подключение к backend и статус сервисов.
-                            </p>
-                        </div>
-                    </div>
-                </div>
+            <p>
+                Мой основной профиль — backend / fullstack.
+                В последнее время рынок по этому направлению просел,
+                поэтому я целенаправленно переосвоил frontend-стек с упором на React.
+            </p>
 
-                <div className="col-md-4">
-                    <div className="card shadow-sm">
-                        <div className="card-body">
-                            <h5 className="card-title">About</h5>
-                            <p className="card-text">
-                                Информация о проекте и структуре.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </div>
+            <p>
+                Чтобы это не выглядело «обучением ради обучения»,
+                я собрал рабочий проект, приближённый к реальной задаче:
+                авторизация, роли, CRUD, API, структура приложения.
+            </p>
+
+            <p>
+                У меня большой коммерческий опыт разработки и ответственность за результат —
+                поэтому React для меня не «новая игрушка», а ещё один рабочий инструмент.
+            </p>
+
+            <p>
+                Я не позиционирую себя как senior React-разработчика.
+                Моё предложение — честный уровень, системное мышление и способность быстро встраиваться в проект.
+            </p>
+
+            <p>
+                Подробное резюме и подтверждение опыта — на следующей странице.
+            </p>
+
+        </>
     );
 }

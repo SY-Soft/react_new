@@ -4,10 +4,21 @@ import { db } from "./db.js";
 
 const app = express();
 
-app.use(cors());
+/* ===== ABSOLUTE MINIMUM CORS ===== */
+app.use(cors({
+    origin: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+}));
+
 app.use(express.json());
 
-// test route
+/* ===== TEST ROUTE ===== */
+app.get("/api/ping", (req, res) => {
+    res.json({ success: true, pong: true });
+});
+
+/* ===== USERS COUNT ===== */
 app.get("/api/users/count", async (req, res) => {
     try {
         const [rows] = await db.query(
@@ -16,18 +27,37 @@ app.get("/api/users/count", async (req, res) => {
 
         res.json({
             success: true,
-            count: rows[0].cnt,
+            data: rows[0].cnt,
         });
     } catch (err) {
         console.error(err);
         res.status(500).json({
             success: false,
-            error: "DB error",
+            message: "DB error",
         });
     }
 });
 
-const PORT = 8800;
-app.listen(PORT, () => {
-    console.log(`API running on http://localhost:${PORT}`);
+/* ===== USERS LIST ===== */
+app.get("/api/users/get_all", async (req, res) => {
+    try {
+        const [rows] = await db.query(
+            "SELECT id, name, email, role FROM users"
+        );
+
+        res.json({
+            success: true,
+            data: rows,
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({
+            success: false,
+            message: "DB error",
+        });
+    }
+});
+
+app.listen(8800, () => {
+    console.log("API running on http://localhost:8800");
 });
