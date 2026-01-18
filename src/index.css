@@ -1,3 +1,19 @@
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  width: 100%;
+}
+
+.layout-wrapper {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+}
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -53,7 +69,18 @@ button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
+.sy-link-ico{
+ color: white;
+  font-size: 26px;
+  margin-top: -5px;
+}
+.sy-header-debug{
+ color: #ffd6d6;
 
+}
+i.sy-user-op{ font-size: 22px; margin-right: 10px;}
+i.sy-user-op.text-secondary{ cursor: default; }
+i.sy-user-op:last-child{margin-left: 0;}
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
