@@ -17,7 +17,7 @@ export default function Login() {
         setError("");
         setFieldErrors({});
         try {
-            const data = await apiFetch("/login", {
+            const data = await apiFetch("/api/login", {
                 method: "POST",
                 body: JSON.stringify({ email, password }),
             });
