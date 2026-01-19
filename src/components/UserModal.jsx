@@ -1,6 +1,7 @@
 import {useEffect, useState} from "react";
 import {apiFetch} from "../utils/api.js";
 import {useNotify} from "../context/NotificationContext";
+import { useAuth } from "../AuthContext";
 
 
 export default function UserModal({
@@ -12,6 +13,8 @@ export default function UserModal({
     const isEdit = mode === "edit";
     const isAdd = mode === "add";
     const isDelete = mode === "delete";
+
+    const { isAdmin, isAuth, user } = useAuth();
 
     const [loading, setLoading] = useState(false);
     const [targetUser, setTargetUser] = useState(null);
@@ -25,96 +28,52 @@ export default function UserModal({
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
+    const isSelfEdit = isEdit && userId === user?.id;
+    const canEdit = isAuth && (isAdmin || isSelfEdit);
+
+
+
     // ===== load user for edit / delete =====
     useEffect(() => {
-        // ===== ADD MODE =====
+        if (!mode) return;
+        if (!canEdit) return;
+
         if (isAdd) {
-            setErrors({});
-            setError("");
-            setLoading(true);
-
-            const checkAccess = async () => {
-                try {
-                    await apiFetch("/admin/check", {
-                        method: "GET",
-                    });
-
-                    // доступ есть → просто чистим форму
-                    setName("");
-                    setEmail("");
-                    setPassword("");
-                    setTargetUser(null);
-
-                } catch (e) {
-                    // 🔴 нет доступа / JWT умер
-                    if (e.type === "AUTH") {
-                        notify("Сессия истекла. Перезайдите.", "danger");
-                        onClose();
-                        return;
-                    }
-
-                    notify("Ошибка доступа", "danger");
-                    onClose();
-                } finally {
-                    setLoading(false);
-                }
-            };
-
-            checkAccess();
+            setName("");
+            setEmail("");
+            setPassword("");
+            setTargetUser(null);
             return;
         }
 
-
         if (!userId) return;
-        if (!isEdit && !isDelete) return;
 
         setLoading(true);
-        setErrors({});
-        setError("");
 
-
-        const loadUser = async () => {
-            try {
-                const data = await apiFetch("/user/get", {
-                    method: "POST",
-                    body: JSON.stringify({id: userId}),
-                });
-
+        apiFetch("/api/users/get", {
+            method: "POST",
+            body: JSON.stringify({ id: userId }),
+        })
+            .then(data => {
                 setTargetUser(data);
-
-                if (isEdit) {
-                    setName(data.name || "");
-                    setEmail(data.email || "");
-                    setPassword("");
-                }
-            } catch (e) {
-                console.log("loadUser error1:", e);
-
-                // JWT умер / нет доступа
-                if (e.type === "AUTH") {
-                    setError("Сессия истекла. Перезайдите.");
-                    notify("Сессия истекла. Перезайдите.", "danger");
-                    onClose();
-                    return;
-                }
-
-                setError("Ошибка загрузки пользователя");
-                notify("Ошибка загрузки пользователя", "danger");
+                setName(data.name);
+                setEmail(data.email);
+            })
+            .catch(e => {
+                notify(e.message || "Ошибка загрузки", "danger");
                 onClose();
-            } finally {
-                setLoading(false);
-            }
-        };
+            })
+            .finally(() => setLoading(false));
+    }, [mode, userId, canEdit]);
 
-        loadUser();
-
-    }, [mode, userId]);
+    if (!canEdit) return null;
+    if (!mode) return null;
 
     // ===== delete =====
     async function handleDelete() {
         setLoading(true);
         try {
-            await apiFetch(`/user_delete/${userId}`, {
+            await apiFetch(`/api/users/${userId}`, {
                 method: "DELETE",
             });
 
@@ -143,8 +102,8 @@ export default function UserModal({
             newErrors.email = "Неверный email";
         }
 
-        if (isAdd && (!password || password.length < 3)) {
-            newErrors.password = "Пароль минимум 3 символа";
+        if (isAdd && (!password || password.length < 5)) {
+            newErrors.password = "Пароль минимум 5 символов";
         }
         console.log(newErrors);
         // 🔴 если есть ошибки — НЕ идём дальше
@@ -165,7 +124,7 @@ export default function UserModal({
                 password: password || null,
             };
 
-            await apiFetch(`/users/save`, {
+            await apiFetch(`/api/users/save`, {
                 method: "POST",
                 body: JSON.stringify(payload),
             });

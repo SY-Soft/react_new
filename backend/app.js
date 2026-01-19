@@ -129,7 +129,6 @@ app.post("/api/login", async (req, res) => {
 });
 
 
-/* ===================== USERS ===================== */
 
 app.get("/api/users/count", async (req, res) => {
     try {
@@ -154,6 +153,157 @@ app.get("/api/users/get_all", async (req, res) => {
         fail(res, { message: "DB error" });
     }
 });
+
+app.post("/api/users/get", checkAdmin, async (req, res) => {
+    const { id } = req.body;
+
+    const [rows] = await db.query(
+        "SELECT id, name, email, role FROM users WHERE id = ? LIMIT 1",
+        [id]
+    );
+
+    if (!rows.length) {
+        return fail(res, { message: "Пользователь не найден" });
+    }
+
+    ok(res, rows[0]);
+});
+
+app.delete("/api/users/:id", checkAdmin, async (req, res) => {
+    await db.query("DELETE FROM users WHERE id = ?", [req.params.id]);
+    ok(res);
+});
+
+app.post("/api/users/save", checkAdmin, async (req, res) => {
+    const { id, name, email, password } = req.body;
+
+    /* ===== базовая валидация ===== */
+
+    const errors = {};
+
+    if (!name || name.trim().length < 3 || name.trim().length > 32) {
+        errors.name = "Имя должно быть от 3 до 32 символов";
+    }
+
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        errors.email = "Неверный email";
+    }
+
+    // пароль проверяем ТОЛЬКО при добавлении или если он задан
+    if (!id && (!password || password.length < 3)) {
+        errors.password = "Пароль минимум 3 символа";
+    }
+
+    if (password && password.length > 0 && password.length < 3) {
+        errors.password = "Пароль минимум 3 символа";
+    }
+
+    if (Object.keys(errors).length > 0) {
+        return fail(res, {
+            type: "VALIDATION",
+            errors,
+        });
+    }
+
+    try {
+        /* ===== проверка уникальности email ===== */
+
+        let q = "SELECT id FROM users WHERE email = ?";
+        const params = [email];
+
+        if (id) {
+            q += " AND id <> ?";
+            params.push(id);
+        }
+
+        const [exists] = await db.query(q, params);
+
+        if (exists.length) {
+            return fail(res, {
+                type: "BUSINESS",
+                errors: {
+                    email: "Email уже используется",
+                },
+            });
+        }
+
+        /* ===== UPDATE ===== */
+
+        if (id) {
+            // базовое обновление
+            await db.query(
+                "UPDATE users SET name=?, email=? WHERE id=?",
+                [name, email, id]
+            );
+
+            // если пароль указан — обновляем отдельно
+            if (password && password.length > 0) {
+                const hash = await bcrypt.hash(password, 10);
+                await db.query(
+                    "UPDATE users SET password=? WHERE id=?",
+                    [hash, id]
+                );
+            }
+
+            /* ===== INSERT ===== */
+        } else {
+            const hash = await bcrypt.hash(password, 10);
+
+            await db.query(
+                "INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, 0)",
+                [name, email, hash]
+            );
+        }
+
+        return ok(res);
+
+    } catch (err) {
+        console.error("USERS SAVE ERROR:", err);
+        return fail(res, { message: "Ошибка сервера" });
+    }
+});
+
+app.put("/api/users/role", checkAdmin, async (req, res) => {
+    const { userId, role } = req.body;
+
+    // ===== validation =====
+    if (!userId || typeof role !== "number") {
+        return fail(res, {
+            type: "VALIDATION",
+            message: "Некорректные данные",
+        });
+    }
+
+    // 🔒 запрет админу менять роль самому себе
+    if (req.user.id === userId) {
+        return fail(res, {
+            type: "BUSINESS",
+            message: "Нельзя изменить роль самому себе",
+        });
+    }
+
+    try {
+        const [result] = await db.query(
+            "UPDATE users SET role = ? WHERE id = ?",
+            [role, userId]
+        );
+
+        if (result.affectedRows === 0) {
+            return fail(res, {
+                type: "BUSINESS",
+                message: "Пользователь не найден",
+            });
+        }
+
+        return ok(res);
+
+    } catch (err) {
+        console.error(err);
+        return fail(res, { message: "DB error" });
+    }
+});
+
+
 
 /* ===================== START ===================== */
 
