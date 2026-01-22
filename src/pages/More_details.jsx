@@ -40,7 +40,7 @@ export default function More_details() {
                 <li>
                     <strong>2008</strong> — ООО с ИИ «ЧИП» (сеть «УмаПалата») (в штате).
                     Есть рекомендательное письмо от непосредственного руководителя.
-                    <a href="/public/scan_CHIP.jpg" target="_blank"> Скан письма</a>
+                    <a href="/scan_CHIP.jpg" target="_blank"> Скан письма</a>
 
                 </li>
                 <li>
