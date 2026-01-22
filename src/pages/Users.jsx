@@ -85,7 +85,7 @@ export default function Users() {
     return (
         <div>
             <div className="d-flex justify-content-between align-items-center mb-3">
-                <h2>Пользователи</h2>
+                <h1>Пользователи</h1>
 
                 <UserModal
                     mode={modalMode}

@@ -1,5 +1,4 @@
-// вот мой Header.jsx
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { useAuth } from "../AuthContext.jsx";
 
 export default function Header() {
@@ -8,28 +7,31 @@ export default function Header() {
     return (
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
             <div className="container">
-                <Link className="navbar-brand" to="/">MyReact</Link>
+                <NavLink className="navbar-brand" to="/">MyReact</NavLink>
+
                 {user ? (
-                    <>
-                        <span className="sy-header-debug">Ты {user.name}, и ты {user.role===1?'admin':'user'}</span>
-                    </>
+                    <span className="sy-header-debug">
+                        Вы {user.name}, и вы {user.role === 1 ? "admin" : "user"}
+                    </span>
                 ) : (
-                    <>
-                        <span className="sy-header-debug">Ты гость ;)</span>
-                    </>
+                    <span className="sy-header-debug">Вы гость <i class="bi bi-emoji-smile"></i></span>
                 )}
+
                 <div className="navbar-nav">
-                    <Link className="nav-link" to="/">Главная</Link>
-                    <Link className="nav-link" to="/more_details">Подробнее</Link>
-                    <Link className="nav-link" to="/about">О проекте</Link>
-                    <Link className="nav-link" to="/users">Юзеры</Link>
+                    <NavLink className="nav-link" to="/">Главная</NavLink>
+                    <NavLink className="nav-link" to="/more_details">Подробнее</NavLink>
+                    <NavLink className="nav-link" to="/about">О проекте</NavLink>
+                    <NavLink className="nav-link" to="/users">Юзеры</NavLink>
+
                     {user ? (
-                        <Link className="nav-link sy-link-ico" onClick={logout}><i className="bi bi-box-arrow-right"></i></Link>
+                        <a className="nav-link sy-link-ico" onClick={logout}>
+                            <i className="bi bi-box-arrow-right"></i>
+                        </a>
                     ) : (
-                        <Link className="nav-link sy-link-ico" to="/login"><i className="bi bi-box-arrow-in-right"></i></Link>
+                        <NavLink className="nav-link sy-link-ico" to="/login">
+                            <i className="bi bi-box-arrow-in-right"></i>
+                        </NavLink>
                     )}
-
-
                 </div>
             </div>
         </nav>

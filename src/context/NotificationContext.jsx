@@ -8,7 +8,6 @@ export function NotificationProvider({ children }) {
     function notify(text, type = "info") {
         setMessage({ text, type });
 
-        // авто-скрытие через 3 сек
         setTimeout(() => setMessage(null), 7000);
     }
 

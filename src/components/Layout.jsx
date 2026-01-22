@@ -6,16 +6,16 @@ import Footer from "./Footer";
 export default function Layout() {
     return (
         <div className="d-flex flex-column min-vh-100">
-            {/* Шапка — всегда сверху */}
+            {/* Шапка  */}
             <Header />
 
-            {/* Контент — растягивается */}
+            {/* Контент */}
             <main className="flex-grow-1">
                 <div className="container py-4">
                     <Outlet />
                 </div>
             </main>
-            {/* Подвал всегда снизу*/}
+            {/* Подвал */}
             <Footer />
         </div>
     );

@@ -1,16 +1,82 @@
-# React + Vite
+# React demo project — User management
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Демонстрационный проект, созданный как практическое знакомство с React
+на примере реальной прикладной задачи.
 
-Currently, two official plugins are available:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## О проекте
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Проект представляет собой простой пользовательский модуль
+с ролевой моделью доступа.
 
-## Expanding the ESLint configuration
+Цель — проверить на практике базовые принципы React-приложения,
+структуру, работу с API и авторизацией,
+а также получить опыт полного цикла:
+от локального развёртывания до деплоя.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## Функциональность
+
+- Просмотр списка пользователей
+- Роль **admin**:
+    - добавление пользователей
+    - редактирование и удаление пользователей
+    - изменение ролей
+- Роль **user**:
+    - редактирование только собственной учётной записи
+
+
+---
+
+## Интерфейс
+
+Интерфейс собран на Bootstrap и ориентирован прежде всего
+на простоту разметки и читаемость структуры.
+
+Адаптивность реализована на базовом уровне.
+
+В рамках демонстрационного проекта сознательно не реализованы:
+- пейджинг
+- фильтрация
+- сортировка
+- поиск
+
+Эти элементы рассматриваются как очевидный следующий этап развития,
+но не входили в текущую цель проекта.
+
+---
+
+## Технический контур
+
+В рамках проекта реализованы:
+
+- клиентская авторизация
+- ролевая модель доступа
+- CRUD-операции
+- взаимодействие с backend через JSON API
+- JWT-аутентификация
+
+Проект собирался и дорабатывался в реальном окружении
+с использованием Git и хостинга,
+а не исключительно в локальной «песочнице».
+
+---
+
+## Цель проекта
+
+Целью было:
+
+- с нуля развернуть рабочий React-проект
+- разобраться с архитектурой React-приложения
+- реализовать базовый рабочий контур  
+  (авторизация, роли, CRUD, API)
+- получить практический опыт,
+  максимально приближённый к реальной рабочей задаче
+
+Проект не позиционируется как «идеальный» или «production-ready»,
+а как честная демонстрация текущего уровня
+и подхода к решению задач.
+

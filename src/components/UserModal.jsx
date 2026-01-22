@@ -38,13 +38,9 @@ export default function UserModal({
         if (!mode) return;
         if (!canEdit) return;
 
-        if (isAdd) {
-            setName("");
-            setEmail("");
-            setPassword("");
-            setTargetUser(null);
-            return;
-        }
+        resetForm();
+
+        if (isAdd) return;
 
         if (!userId) return;
 
@@ -69,7 +65,7 @@ export default function UserModal({
     if (!canEdit) return null;
     if (!mode) return null;
 
-    // ===== delete =====
+    // delete
     async function handleDelete() {
         setLoading(true);
         try {
@@ -84,14 +80,11 @@ export default function UserModal({
         } catch (e) {
             notify(e.message, "danger");
         }
-        //**
-        // setLoading(true);
-        // setError("");
     }
 
-    // ===== add / edit =====
+    // add / edit =====
     async function handleSubmit() {
-        // 🔹 1. локальная валидация
+        // локальная валидация
         const newErrors = {};
 
         if (!name || name.trim().length < 3 || name.trim().length > 32) {
@@ -106,13 +99,13 @@ export default function UserModal({
             newErrors.password = "Пароль минимум 5 символов";
         }
         console.log(newErrors);
-        // 🔴 если есть ошибки — НЕ идём дальше
+        // ошибки — НЕ идём дальше
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);
             return;
         }
 
-        // 🔹 2. ошибок нет — чистим и шлём запрос
+        // ошибок нет — чистим и шлём запрос
         setErrors({});
         setLoading(true);
 
@@ -146,6 +139,15 @@ export default function UserModal({
     }
 
     if (!mode) return null;
+    function resetForm() {
+        setName("");
+        setEmail("");
+        setPassword("");
+        setErrors({});
+        setError("");
+        setTargetUser(null);
+        setLoading(false);
+    }
 
     return (
         <div className="modal fade show d-block" tabIndex="-1">

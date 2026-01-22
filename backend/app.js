@@ -70,7 +70,7 @@ function checkAdmin(req, res, next) {
         req.user = decoded;
         next();
     } catch (e) {
-        return authFail(res, "Невалидный или истёкший токен");
+        return authFail(res, "Невалидный или истёкший токен. Перезайдите.");
     }
 }
 
@@ -190,12 +190,12 @@ app.post("/api/users/save", checkAdmin, async (req, res) => {
     }
 
     // пароль проверяем ТОЛЬКО при добавлении или если он задан
-    if (!id && (!password || password.length < 3)) {
-        errors.password = "Пароль минимум 3 символа";
+    if (!id && (!password || password.length < 5)) {
+        errors.password = "Пароль минимум 5 символов";
     }
 
-    if (password && password.length > 0 && password.length < 3) {
-        errors.password = "Пароль минимум 3 символа";
+    if (password && password.length > 0 && password.length < 5) {
+        errors.password = "Пароль минимум 5 символов";
     }
 
     if (Object.keys(errors).length > 0) {
@@ -274,7 +274,7 @@ app.put("/api/users/role", checkAdmin, async (req, res) => {
         });
     }
 
-    // 🔒 запрет админу менять роль самому себе
+    // запрет админу менять роль самому себе
     if (req.user.id === userId) {
         return fail(res, {
             type: "BUSINESS",
